@@ -1,11 +1,13 @@
-import { SignInButton } from "@/components/auth/signin-button";
+import { redirect } from "next/navigation";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth";
 
-export default function Home() {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <SignInButton />
-      </div>
-    </main>
-  );
+export default async function Home() {
+  const session = await getServerSession(authOptions);
+
+  if (!session?.user) {
+    redirect("/signin");
+  } else {
+    redirect("/dashboard");
+  }
 }
