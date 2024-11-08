@@ -51,19 +51,6 @@ CREATE TABLE "Entry" (
 );
 
 -- CreateTable
-CREATE TABLE "Meal" (
-    "id" TEXT NOT NULL,
-    "type" TEXT NOT NULL,
-    "time" TIMESTAMP(3) NOT NULL,
-    "notes" TEXT,
-    "entryId" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "Meal_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "Exercise" (
     "id" TEXT NOT NULL,
     "type" TEXT NOT NULL,
@@ -74,6 +61,19 @@ CREATE TABLE "Exercise" (
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "Exercise_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Meal" (
+    "id" TEXT NOT NULL,
+    "type" TEXT NOT NULL,
+    "time" TIMESTAMP(3) NOT NULL,
+    "notes" TEXT,
+    "entryId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Meal_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -95,7 +95,7 @@ ALTER TABLE "Session" ADD CONSTRAINT "Session_userId_fkey" FOREIGN KEY ("userId"
 ALTER TABLE "Entry" ADD CONSTRAINT "Entry_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Meal" ADD CONSTRAINT "Meal_entryId_fkey" FOREIGN KEY ("entryId") REFERENCES "Entry"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Exercise" ADD CONSTRAINT "Exercise_entryId_fkey" FOREIGN KEY ("entryId") REFERENCES "Entry"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Exercise" ADD CONSTRAINT "Exercise_entryId_fkey" FOREIGN KEY ("entryId") REFERENCES "Entry"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Meal" ADD CONSTRAINT "Meal_entryId_fkey" FOREIGN KEY ("entryId") REFERENCES "Entry"("id") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -1,10 +1,10 @@
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth/next";
 import { SignInButton } from "@/components/auth/signin-button";
-// import { authOptions } from "@/lib/auth";
+import { authOptions } from "@/lib/auth";
 
 export default async function SignInPage() {
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
 
   if (session?.user) {
     redirect("/dashboard");

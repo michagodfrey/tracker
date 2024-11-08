@@ -15,9 +15,15 @@ export default async function ProtectedLayout({
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="relative flex min-h-screen flex-col">
       <MainNav />
-      <main className="flex-1">{children}</main>
+      <div className="flex-1">{children}</div>
+      <footer className="border-t py-4">
+        <div className="container flex items-center justify-between">
+          <p className="text-sm text-muted-foreground">Daily Tracker</p>
+          <p className="text-sm text-muted-foreground">Built with Next.js</p>
+        </div>
+      </footer>
     </div>
   );
 }
