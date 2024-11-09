@@ -8,6 +8,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum ActivityType {
+  MEAL
+  EXERCISE
+  WAKE_UP
+}
+
 model Account {
   id                String  @id @default(cuid())
   userId            String
@@ -46,17 +52,17 @@ model User {
 }
 
 model Activity {
-  id          String   @id @default(cuid())
+  id          String       @id @default(cuid())
   userId      String
-  type        String   // MEAL, EXERCISE, WAKE_UP
+  type        ActivityType // Changed from String to ActivityType enum
   title       String
   description String?
-  duration    Int?     // in minutes, for exercise
-  calories    Int?     // for meals and exercise
+  duration    Int?        // in minutes, for exercise
+  calories    Int?        // for meals and exercise
   timestamp   DateTime
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, timestamp])
 }
