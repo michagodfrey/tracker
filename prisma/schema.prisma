@@ -1,3 +1,4 @@
+// prisma/schema.prisma
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,12 +14,12 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String?
-  access_token      String?
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String?
+  id_token          String? @db.Text
   session_state     String?
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -34,47 +35,28 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String     @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?    @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
-  Entry         Entry[]
   sessions      Session[]
+  activities    Activity[]
 }
 
-model Entry {
-  id        String     @id
-  date      DateTime
-  wakeTime  DateTime?
-  notes     String?
-  userId    String
-  createdAt DateTime   @default(now())
-  updatedAt DateTime
-  User      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  Exercise  Exercise[]
-  Meal      Meal[]
-}
+model Activity {
+  id          String   @id @default(cuid())
+  userId      String
+  type        String   // MEAL, EXERCISE, WAKE_UP
+  title       String
+  description String?
+  duration    Int?     // in minutes, for exercise
+  calories    Int?     // for meals and exercise
+  timestamp   DateTime
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-model Exercise {
-  id        String   @id
-  type      String
-  duration  Int
-  notes     String?
-  entryId   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime
-  Entry     Entry    @relation(fields: [entryId], references: [id], onDelete: Cascade)
-}
-
-model Meal {
-  id        String   @id
-  type      String
-  time      DateTime
-  notes     String?
-  entryId   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime
-  Entry     Entry    @relation(fields: [entryId], references: [id], onDelete: Cascade)
+  @@index([userId, timestamp])
 }

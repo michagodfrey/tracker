@@ -1,3 +1,4 @@
+// src/app/(auth)/signin/page.tsx
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth/next";
 import { SignInButton } from "@/components/auth/signin-button";
@@ -11,14 +12,14 @@ export default async function SignInPage() {
   }
 
   return (
-    <div className="container flex h-screen w-screen flex-col items-center justify-center">
-      <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
+    <div className="flex min-h-screen items-center justify-center">
+      <div className="w-full max-w-sm space-y-6 rounded-lg border bg-card p-6 shadow-sm">
         <div className="flex flex-col space-y-2 text-center">
           <h1 className="text-2xl font-semibold tracking-tight">
-            Welcome to Tracker
+            Welcome to Daily Tracker
           </h1>
           <p className="text-sm text-muted-foreground">
-            Sign in to start tracking your daily activities
+            Sign in to start tracking your activities
           </p>
         </div>
         <SignInButton />
