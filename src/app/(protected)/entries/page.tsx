@@ -1,8 +1,6 @@
-// src/app/(protected)/entries/page.tsx
-"use client";
-
-import { useState } from "react";
-import { Activity } from "@prisma/client";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 import { EntriesFilter } from "@/components/entries/entries-filter";
 import { EntriesList } from "@/components/entries/entries-list";
 import { EntriesCalendar } from "@/components/entries/entries-calendar";
@@ -14,25 +12,18 @@ import {
   CardContent,
 } from "@/components/ui/card";
 
-interface EntriesPageProps {
-  initialActivities: Activity[];
-}
+export default async function EntriesPage() {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) return null;
 
-export default function EntriesPage({ initialActivities }: EntriesPageProps) {
-  const [filteredActivities, setFilteredActivities] =
-    useState(initialActivities);
-
-  const handleFilterChange = (
-    filter: "ALL" | "MEAL" | "EXERCISE" | "WAKE_UP"
-  ) => {
-    if (filter === "ALL") {
-      setFilteredActivities(initialActivities);
-    } else {
-      setFilteredActivities(
-        initialActivities.filter((activity) => activity.type === filter)
-      );
-    }
-  };
+  const activities = await prisma.activity.findMany({
+    where: {
+      userId: session.user.id,
+    },
+    orderBy: {
+      timestamp: "desc",
+    },
+  });
 
   return (
     <div className="container py-8">
@@ -45,18 +36,18 @@ export default function EntriesPage({ initialActivities }: EntriesPageProps) {
 
       <div className="grid gap-6 lg:grid-cols-[300px_1fr] mt-8">
         <div className="space-y-4">
-          <EntriesFilter onFilterChange={handleFilterChange} />
+          <EntriesFilter />
           <Card>
             <CardHeader>
               <CardTitle>Calendar</CardTitle>
               <CardDescription>View activities by date</CardDescription>
             </CardHeader>
             <CardContent>
-              <EntriesCalendar activities={filteredActivities} />
+              <EntriesCalendar activities={activities} />
             </CardContent>
           </Card>
         </div>
-        <EntriesList activities={filteredActivities} />
+        <EntriesList activities={activities} />
       </div>
     </div>
   );

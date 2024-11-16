@@ -34,43 +34,47 @@ export function ActivityQuickEntry() {
 
       setIsSubmitting(true);
       try {
+        const activityData = {
+          type: selectedType,
+          title: subType,
+          ...(duration && { duration }), // Only include if duration exists
+          timestamp: new Date().toISOString(),
+        };
+
         const response = await fetch("/api/activities", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            type: selectedType,
-            title: subType,
-            description: null, // Add this
-            duration: selectedType === "EXERCISE" ? duration : null,
-            calories: null, // Add this
-            timestamp: new Date().toISOString(),
-          }),
+          body: JSON.stringify(activityData),
         });
 
-        if (!response.ok) throw new Error("Failed to create activity");
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.message || "Failed to create activity");
+        }
 
         toast({
           title: "Activity Recorded",
           description: `Successfully recorded ${subType}`,
         });
 
-        // Reset form and refresh data
         setSelectedType(null);
         setSubType(null);
         setDuration(null);
         router.refresh();
       } catch (error) {
-        console.log(error)
+        console.error(error);
         toast({
           title: "Error",
-          description: "Failed to record activity. Please try again.",
+          description:
+            error instanceof Error
+              ? error.message
+              : "Failed to record activity",
           variant: "destructive",
         });
       } finally {
         setIsSubmitting(false);
       }
     };
-
   return (
    <Card>
       <CardHeader>
